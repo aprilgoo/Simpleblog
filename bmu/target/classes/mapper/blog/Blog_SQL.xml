@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="blog">
+<select id="selectPostList" parameterType="hashmap" resultType="hashmap">
+SELECT
+            	IDX,
+                TITLE, 
+                SUB_TITLE,               
+                CREA_DTM,
+                CREA_ID
+           FROM
+                POST
+               <include refid="search"></include>    		                     		
+    </select>
+    
+    <sql id="search">
+	    <choose>
+	        <!-- 검색옵션이 전체 검색일 경우 -->
+	        <when test="opt == 'all'">
+	        	<![CDATA[
+	            WHERE
+	             	DEL_GB = 'N' && CONTENT like CONCAT('%', #{keyword}, '%') OR DEL_GB = 'N' && TITLE like CONCAT('%', #{keyword}, '%')     ]]>        
+	        </when>
+	        <!-- 제목 옵션일 경우 -->
+	        <when test="opt =='title'">	        	        
+	          	<![CDATA[  
+	          	WHERE
+	            	DEL_GB = 'N' && TITLE like CONCAT('%', #{keyword}, '%') 	]]>
+	       </when>
+	       <!-- 내용 옵션일 경우 -->
+	       <when test="opt =='contents'">	        	        
+	        	<![CDATA[    
+	        	WHERE
+	            	DEL_GB = 'N' && CONTENT like CONCAT('%', #{keyword}, '%') 	]]>
+	       </when>
+	       <otherwise>
+	       		WHERE 
+	       			DEL_GB = 'N'	       
+	       </otherwise>
+	    </choose>
+	</sql>
+	
+	
+	
+	
+</mapper>
